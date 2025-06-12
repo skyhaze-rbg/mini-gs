@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Scoreboard with Timer</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <button class="back-btn" onclick="location.href='index.html'">
+      ← Back
+    </button>
+
+    <div class="container">
+      <h1>Scoreboard</h1>
+      <form id="scoreForm">
+        <input type="text" id="playerName" placeholder="Player Name" required />
+        <input
+          type="number"
+          id="playerScore"
+          placeholder="Score"
+          required
+          min="0"
+        />
+        <button type="submit">Add Score</button>
+      </form>
+      <table id="scoreTable">
+        <thead>
+          <tr>
+            <th>Player</th>
+            <th>Score</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <button class="reset-btn" id="resetBtn">Reset Scores</button>
+    </div>
+
+    <!-- Timer Section in separate card -->
+    <div class="timer-card">
+      <h2>Countdown Timer</h2>
+      <div>
+        <input
+          type="number"
+          id="inputHours"
+          placeholder="Hours"
+          min="0"
+          style="width: 90px"
+        />
+        <input
+          type="number"
+          id="inputMinutes"
+          placeholder="Minutes"
+          min="0"
+          max="59"
+          style="width: 90px"
+        />
+        <input
+          type="number"
+          id="inputSeconds"
+          placeholder="Seconds"
+          min="0"
+          max="59"
+          style="width: 90px"
+        />
+      </div>
+      <div style="font-size: 2rem; margin: 10px 0" id="timerDisplay">
+        00:00:00
+      </div>
+      <div>
+        <button id="startBtn">Start</button>
+        <button id="pauseBtn" disabled>Pause</button>
+        <button id="resetBtnTimer" disabled>Reset</button>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

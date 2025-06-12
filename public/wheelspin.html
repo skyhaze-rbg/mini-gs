@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Wheel Spin</title>
+    <style>
+      :root {
+        --primary-color: #4a90e2;
+        --primary-dark: #357abd;
+        --success-color: #28a745;
+        --success-dark: #1e7e34;
+        --danger-color: #dc3545;
+        --text-color: #2c3e50;
+        --background-color: #f0f4f8;
+        --card-background: #ffffff;
+        --border-radius: 12px;
+        --box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(
+          135deg,
+          var(--background-color) 0%,
+          #e6eef5 100%
+        );
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 40px 20px;
+        min-height: 100vh;
+        color: var(--text-color);
+      }
+
+      .back-btn {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: var(--border-radius);
+        padding: 12px 24px;
+        font-size: 1rem;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+        transition: all 0.3s ease;
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .back-btn:hover {
+        background-color: var(--primary-dark);
+        transform: translateY(-2px);
+      }
+
+      .back-btn:active {
+        transform: translateY(0);
+      }
+
+      #inputNamesContainer {
+        background: var(--card-background);
+        padding: 25px;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        width: 100%;
+        max-width: 400px;
+        margin-bottom: 30px;
+        transition: transform 0.3s ease;
+      }
+
+      #inputNamesContainer:hover {
+        transform: translateY(-5px);
+      }
+
+      #inputNamesContainer label {
+        display: block;
+        margin-bottom: 12px;
+        font-weight: 600;
+        color: var(--text-color);
+      }
+
+      #namesInput {
+        width: 100%;
+        height: 100px;
+        font-size: 1rem;
+        padding: 15px;
+        border-radius: var(--border-radius);
+        border: 2px solid #e1e8ed;
+        resize: vertical;
+        font-family: inherit;
+        transition: all 0.3s ease;
+        background: #f8fafc;
+      }
+
+      #namesInput:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+        background: white;
+      }
+
+      #updateNamesBtn {
+        align-self: flex-end;
+        padding: 12px 24px;
+        font-size: 1rem;
+        border: none;
+        border-radius: var(--border-radius);
+        background-color: var(--success-color);
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 15px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      #updateNamesBtn:hover {
+        background-color: var(--success-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.2);
+      }
+
+      #wheel-container {
+        position: relative;
+        width: 350px;
+        height: 350px;
+        margin: 20px 0;
+        filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.15));
+      }
+
+      #wheelCanvas {
+        border-radius: 50%;
+        transition: transform 6s cubic-bezier(0.33, 1, 0.68, 1);
+      }
+
+      #arrow {
+        width: 0;
+        height: 0;
+        border-left: 20px solid transparent;
+        border-right: 20px solid transparent;
+        border-bottom: 0 solid transparent;
+        border-top: 60px solid var(--danger-color);
+        position: absolute;
+        top: -58px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 10;
+        filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2));
+        transition: transform 0.3s ease;
+      }
+
+      #arrow:hover {
+        transform: translateX(-50%) scale(1.1);
+      }
+
+      #spinBtn {
+        margin: 30px 0;
+        padding: 16px 48px;
+        font-size: 1.3rem;
+        border: none;
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        background-color: var(--primary-color);
+        color: white;
+        transition: all 0.3s ease;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+      }
+
+      #spinBtn:hover:not(:disabled) {
+        background-color: var(--primary-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(74, 144, 226, 0.4);
+      }
+
+      #spinBtn:active:not(:disabled) {
+        transform: translateY(0);
+      }
+
+      #spinBtn:disabled {
+        background-color: #6c757d;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      #result {
+        margin-top: 25px;
+        font-size: 1.8rem;
+        font-weight: bold;
+        min-height: 1.5em;
+        color: var(--text-color);
+        text-align: center;
+        max-width: 350px;
+        word-wrap: break-word;
+        padding: 15px 30px;
+        background: var(--card-background);
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        transition: all 0.3s ease;
+      }
+
+      #result.winner {
+        animation: winnerPulse 1s ease-in-out;
+        background: linear-gradient(135deg, #ffd700 0%, #ffeb3b 100%);
+        color: #000;
+      }
+
+      @keyframes winnerPulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      @media (max-width: 480px) {
+        body {
+          padding: 20px 15px;
+        }
+
+        #wheel-container {
+          width: 280px;
+          height: 280px;
+        }
+
+        #wheelCanvas {
+          width: 280px;
+          height: 280px;
+        }
+
+        #spinBtn {
+          font-size: 1.1rem;
+          padding: 14px 36px;
+        }
+
+        #result {
+          font-size: 1.4rem;
+          padding: 12px 24px;
+        }
+
+        #inputNamesContainer {
+          padding: 20px;
+        }
+      }
+
+      /* Loading animation */
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .loading {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 3px solid #f3f3f3;
+        border-top: 3px solid var(--primary-color);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-right: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <button class="back-btn" onclick="location.href='index.html'">
+      ← Back
+    </button>
+
+    <div id="inputNamesContainer">
+      <label for="namesInput">Enter names (one per line):</label>
+      <textarea
+        id="namesInput"
+        placeholder="Alice&#10;Bob&#10;Charlie"
+      ></textarea>
+      <button id="updateNamesBtn">Update Wheel</button>
+    </div>
+
+    <div id="wheel-container">
+      <div id="arrow"></div>
+      <canvas id="wheelCanvas" width="350" height="350"></canvas>
+    </div>
+
+    <button id="spinBtn" disabled>Spin</button>
+    <div id="result"></div>
+
+    <script>
+      const canvas = document.getElementById("wheelCanvas");
+      const ctx = canvas.getContext("2d");
+      const spinBtn = document.getElementById("spinBtn");
+      const resultDiv = document.getElementById("result");
+      const namesInput = document.getElementById("namesInput");
+      const updateNamesBtn = document.getElementById("updateNamesBtn");
+
+      let segments = [
+        "Alice",
+        "Bob",
+        "Charlie",
+        "Diana",
+        "Eve",
+        "Frank",
+        "Grace",
+        "Heidi",
+      ];
+      let currentAngle = 0;
+      let spinning = false;
+      let winnerIndex = null;
+
+      // Add confetti effect
+      function createConfetti() {
+        const colors = ["#ffd700", "#ffeb3b", "#4a90e2", "#28a745", "#dc3545"];
+        for (let i = 0; i < 100; i++) {
+          const confetti = document.createElement("div");
+          confetti.className = "confetti";
+          confetti.style.left = Math.random() * 100 + "vw";
+          confetti.style.animationDuration = Math.random() * 3 + 2 + "s";
+          confetti.style.backgroundColor =
+            colors[Math.floor(Math.random() * colors.length)];
+          document.body.appendChild(confetti);
+          setTimeout(() => confetti.remove(), 5000);
+        }
+      }
+
+      function drawWheel() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        const radius = Math.min(centerX, centerY) - 10;
+        const segmentCount = segments.length;
+        const anglePerSegment = (2 * Math.PI) / segmentCount;
+        const colors = [
+          "#4a90e2",
+          "#357abd",
+          "#28a745",
+          "#ffc107",
+          "#dc3545",
+          "#6f42c1",
+          "#fd7e14",
+          "#20c997",
+        ];
+
+        // Draw outer ring
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+        ctx.strokeStyle = "#fff";
+        ctx.lineWidth = 4;
+        ctx.stroke();
+
+        for (let i = 0; i < segmentCount; i++) {
+          // Draw segment
+          ctx.save();
+          ctx.beginPath();
+          ctx.moveTo(centerX, centerY);
+          ctx.arc(
+            centerX,
+            centerY,
+            radius,
+            currentAngle + i * anglePerSegment,
+            currentAngle + (i + 1) * anglePerSegment,
+          );
+          ctx.closePath();
+          ctx.fillStyle =
+            winnerIndex === i ? "#ffd700" : colors[i % colors.length];
+          ctx.fill();
+          ctx.strokeStyle = "#fff";
+          ctx.lineWidth = 2;
+          ctx.stroke();
+          ctx.restore();
+
+          // Draw text
+          ctx.save();
+          ctx.translate(centerX, centerY);
+          ctx.rotate(currentAngle + (i + 0.5) * anglePerSegment);
+          ctx.textAlign = "right";
+          ctx.fillStyle = "#fff";
+          ctx.font = "bold 18px Segoe UI, Arial";
+          ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
+          ctx.shadowBlur = 3;
+          ctx.fillText(segments[i], radius - 20, 8);
+          ctx.restore();
+        }
+
+        // Draw center circle
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, 20, 0, 2 * Math.PI);
+        ctx.fillStyle = "#fff";
+        ctx.fill();
+        ctx.strokeStyle = "#e1e8ed";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+
+      function spinWheel() {
+        if (spinning || segments.length === 0) return;
+        spinning = true;
+        spinBtn.disabled = true;
+        resultDiv.textContent = "";
+        resultDiv.classList.remove("winner");
+        winnerIndex = null;
+
+        const spins = Math.floor(Math.random() * 5) + 6;
+        const randomOffset = Math.random() * 2 * Math.PI;
+        const totalRotation = spins * 2 * Math.PI + randomOffset;
+        const duration = 6000;
+        const start = performance.now();
+        const initialAngle = currentAngle;
+
+        function animate(now) {
+          const elapsed = now - start;
+          const t = Math.min(elapsed / duration, 1);
+          const ease = 1 - Math.pow(1 - t, 3);
+          currentAngle = initialAngle + totalRotation * ease;
+          drawWheel();
+
+          if (t < 1) {
+            requestAnimationFrame(animate);
+          } else {
+            currentAngle = (initialAngle + totalRotation) % (2 * Math.PI);
+            const segmentCount = segments.length;
+            const anglePerSegment = (2 * Math.PI) / segmentCount;
+            const pointerAngle = -Math.PI / 2;
+            const normalized =
+              (2 * Math.PI + pointerAngle - (currentAngle % (2 * Math.PI))) %
+              (2 * Math.PI);
+            winnerIndex =
+              ((Math.floor(normalized / anglePerSegment) % segmentCount) +
+                segmentCount) %
+              segmentCount;
+
+            drawWheel();
+            resultDiv.textContent = `Winner: ${segments[winnerIndex]}`;
+            resultDiv.classList.add("winner");
+            createConfetti();
+
+            // Play winning sound
+            const winSound = new Audio(
+              "https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3",
+            );
+            winSound.play();
+
+            spinning = false;
+            spinBtn.disabled = false;
+          }
+        }
+        requestAnimationFrame(animate);
+      }
+
+      updateNamesBtn.addEventListener("click", () => {
+        const inputText = namesInput.value.trim();
+        if (!inputText) {
+          alert("Please enter at least one name.");
+          return;
+        }
+        segments = inputText
+          .split("\n")
+          .map((name) => name.trim())
+          .filter((name) => name.length > 0);
+        currentAngle = 0;
+        winnerIndex = null;
+        drawWheel();
+        resultDiv.textContent = "";
+        resultDiv.classList.remove("winner");
+        spinBtn.disabled = segments.length === 0;
+      });
+
+      spinBtn.addEventListener("click", spinWheel);
+
+      // Initialize wheel with default names
+      namesInput.value = segments.join("\n");
+      drawWheel();
+      spinBtn.disabled = segments.length === 0;
+    </script>
+  </body>
+</html>

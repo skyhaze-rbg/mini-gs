@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Main Page</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(120deg, #a1c4fd, #c2e9fb, #fbc2eb, #fcb69f);
+        background-size: 400% 400%;
+        animation: gradientBG 12s ease-in-out infinite;
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      @keyframes gradientBG {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+      .main-card {
+        background: rgba(255, 255, 255, 0.95);
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
+        border-radius: 24px;
+        padding: 48px 32px 36px 32px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-width: 320px;
+        max-width: 95vw;
+        gap: 28px;
+      }
+      .main-logo {
+        font-size: 3.2rem;
+        margin-bottom: 8px;
+        user-select: none;
+      }
+      .main-title {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: #007bff;
+        margin-bottom: 4px;
+        letter-spacing: 1px;
+        text-align: center;
+      }
+      .main-subtitle {
+        font-size: 1.1rem;
+        color: #555;
+        margin-bottom: 12px;
+        text-align: center;
+        max-width: 320px;
+      }
+      .main-btns {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        width: 100%;
+        margin-top: 10px;
+      }
+      .main-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        padding: 16px 0;
+        font-size: 1.18rem;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        background: linear-gradient(90deg, #007bff 60%, #00c6ff 100%);
+        color: white;
+        font-weight: 600;
+        box-shadow: 0 2px 8px rgba(0, 123, 255, 0.1);
+        transition:
+          background 0.3s,
+          transform 0.15s;
+        width: 100%;
+      }
+      .main-btn:hover {
+        background: linear-gradient(90deg, #0056b3 60%, #00aaff 100%);
+        transform: translateY(-2px) scale(1.03);
+      }
+      @media (max-width: 480px) {
+        .main-card {
+          padding: 28px 8px 20px 8px;
+          min-width: 0;
+        }
+        .main-title {
+          font-size: 1.3rem;
+        }
+        .main-logo {
+          font-size: 2.1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      style="
+        position: absolute;
+        top: 36px;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        z-index: 100;
+        pointer-events: none;
+      "
+    >
+      <span
+        style="
+          font-size: 2.8rem;
+          font-weight: 900;
+          color: #222;
+          letter-spacing: 2px;
+          text-shadow:
+            0 2px 12px #fff,
+            0 1px 0 #a1c4fd;
+        "
+        >OLAAA server ko game tools
+      </span>
+    </div>
+    <div class="main-card">
+      <div class="main-logo">🎲</div>
+      <div class="main-title">Game Tools</div>
+      <div class="main-subtitle">
+        Fun utilities for your game time with your
+        <b>sathi</b> haru!<br />Choose a game tool below to get started.
+      </div>
+      <div class="main-btns">
+        <button class="main-btn" onclick="location.href='scoreboard.html'">
+          <span>⏱️</span> Scoreboard & Timer
+        </button>
+        <button class="main-btn" onclick="location.href='wheelspin.html'">
+          <span>🎡</span> Wheel Spin
+        </button>
+      </div>
+    </div>
+  </body>
+</html>
