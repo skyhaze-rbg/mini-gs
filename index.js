@@ -1,11 +1,41 @@
 const express = require("express");
 const path = require("path");
+const http = require("http");
 const app = express();
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
 let scores = {};
+
+// Keep-alive endpoint
+app.get("/keep-alive", (req, res) => {
+  res.status(200).json({ status: "alive" });
+});
+
+// Function to ping the server
+const pingServer = () => {
+  const options = {
+    hostname: 'localhost',
+    port: PORT,
+    path: '/keep-alive',
+    method: 'GET'
+  };
+
+  const req = http.request(options, (res) => {
+    console.log('Server pinged successfully');
+  });
+
+  req.on('error', (error) => {
+    console.error('Error pinging server:', error);
+  });
+
+  req.end();
+};
+
+// Set up interval to ping every 14 minutes
+const PING_INTERVAL = 14 * 60 * 1000; // 14 minutes in milliseconds
+setInterval(pingServer, PING_INTERVAL);
 
 // Serve main page
 app.get("/", (req, res) => {
@@ -47,4 +77,6 @@ app.post("/api/scores/reset", (req, res) => {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+  // Initial ping when server starts
+  pingServer();
 });
